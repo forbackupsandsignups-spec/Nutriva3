@@ -1,0 +1,219 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user physical data, goals, and nutrition targets",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "weight": { "type": "number" },
+        "height": { "type": "number" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["male", "female"] },
+        "activityLevel": { "type": "string", "enum": ["sedentary", "light", "moderate", "high", "extreme"] },
+        "goal": { "type": "string", "enum": ["lose", "gain", "maintain", "muscle", "health"] },
+        "dietType": { "type": "string", "enum": ["standard", "high_protein", "vegetarian", "vegan", "low_carb", "flexible"] },
+        "targets": {
+          "type": "object",
+          "properties": {
+            "calories": { "type": "number" },
+            "protein": { "type": "number" },
+            "carbs": { "type": "number" },
+            "fat": { "type": "number" }
+          }
+        },
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "breakfastTime": { "type": "string" },
+            "lunchTime": { "type": "string" },
+            "dinnerTime": { "type": "string" },
+            "healthUpdateEnabled": { "type": "boolean" },
+            "healthUpdateTime": { "type": "string" }
+          }
+        },
+        "savedMeals": {
+          "type": "array",
+          "items": { "$ref": "#/entities/Food" }
+        },
+        "foodDiary": {
+          "type": "array",
+          "items": { "$ref": "#/entities/FoodDiaryEntry" }
+        },
+        "mealPlan": {
+          "$ref": "#/entities/MealPlanDay"
+        },
+        "weightHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "format": "date-time" },
+              "weight": { "type": "number" }
+            }
+          }
+        },
+        "activeChallenges": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ActiveChallenge" }
+        },
+        "waterIntake": {
+          "type": "object",
+          "properties": {
+            "amount": { "type": "number" },
+            "lastUpdated": { "type": "string", "format": "date-time" }
+          }
+        },
+        "waterNotifications": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "frequencyHours": { "type": "number" },
+            "startTime": { "type": "string" },
+            "endTime": { "type": "string" }
+          }
+        },
+        "orders": {
+          "type": "array",
+          "items": { "$ref": "#/entities/Order" }
+        },
+        "exerciseLog": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ExerciseEntry" }
+        },
+        "weeklyReports": {
+          "type": "array",
+          "items": { "$ref": "#/entities/WeeklyReport" }
+        }
+      },
+      "required": ["name", "weight", "height", "age", "gender", "activityLevel", "goal", "dietType"]
+    },
+    "WeeklyReport": {
+      "title": "Weekly Report",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "achievementsAr": { "type": "array", "items": { "type": "string" } },
+        "achievementsEn": { "type": "array", "items": { "type": "string" } },
+        "tipsAr": { "type": "array", "items": { "type": "string" } },
+        "tipsEn": { "type": "array", "items": { "type": "string" } },
+        "suggestedGoalsAr": { "type": "array", "items": { "type": "string" } },
+        "suggestedGoalsEn": { "type": "array", "items": { "type": "string" } },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "avgCalories": { "type": "number" },
+            "totalWorkouts": { "type": "number" },
+            "weightChange": { "type": "number" },
+            "waterGoalMetDays": { "type": "number" }
+          }
+        }
+      }
+    },
+    "ExerciseEntry": {
+      "title": "Exercise Entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "type": { "type": "string" },
+        "nameAr": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "durationMinutes": { "type": "number" },
+        "intensity": { "type": "string", "enum": ["low", "moderate", "high"] },
+        "caloriesBurned": { "type": "number" }
+      }
+    },
+    "Order": {
+      "title": "Order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "tier": { "type": "string", "enum": ["plus", "pro"] },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "paymentMethod": { "type": "string", "enum": ["instapay", "stripe", "other"] },
+        "status": { "type": "string", "enum": ["completed", "pending", "failed"] },
+        "transactionId": { "type": "string" }
+      }
+    },
+    "ActiveChallenge": {
+      "title": "Active Challenge",
+      "type": "object",
+      "properties": {
+        "challengeId": { "type": "string" },
+        "startDate": { "type": "string", "format": "date-time" },
+        "completedDates": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Food": {
+      "title": "Food",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nameAr": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "calories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fat": { "type": "number" },
+        "servingSize": { "type": "number" },
+        "servingUnit": { "type": "string" },
+        "category": { "type": "string" },
+        "allergens": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "FoodDiaryEntry": {
+      "title": "Food Diary Entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "imageUrl": { "type": "string" },
+        "nameAr": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "calories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fat": { "type": "number" },
+        "analysis": { "type": "string" }
+      }
+    },
+    "MealPlanDay": {
+      "title": "Meal Plan Day",
+      "type": "object",
+      "properties": {
+        "breakfast": { "type": "array", "items": { "$ref": "#/entities/MealItem" } },
+        "lunch": { "type": "array", "items": { "$ref": "#/entities/MealItem" } },
+        "dinner": { "type": "array", "items": { "$ref": "#/entities/MealItem" } },
+        "snacks": { "type": "array", "items": { "$ref": "#/entities/MealItem" } }
+      }
+    },
+    "MealItem": {
+      "title": "Meal Item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "foodId": { "type": "string" },
+        "recipeId": { "type": "string" },
+        "name": { "type": "string" },
+        "calories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fat": { "type": "number" },
+        "logged": { "type": "boolean" },
+        "evaluation": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles indexed by their Firebase Auth UID"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Nutriva — لقمة وميزان",
+  "description": "تطبيق متكامل لتتبع التغذية والنشاط البدني مع تحليل الوجبات بالذكاء الاصطناعي وتنبيهات مخصصة.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

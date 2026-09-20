@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Master Deny-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 2. Validation Blueprints
+    function isValidUserProfile(data) {
+      let requiredFields = ['name', 'weight', 'height', 'age', 'gender', 'activityLevel', 'goal', 'dietType'];
+      return data.keys().hasAll(requiredFields)
+        && data.name is string && data.name.size() <= 100
+        && data.weight is number
+        && data.height is number
+        && data.age is number
+        && data.gender in ['male', 'female']
+        && data.activityLevel in ['sedentary', 'light', 'moderate', 'high', 'extreme']
+        && data.goal in ['lose', 'gain', 'maintain', 'muscle', 'health']
+        && data.dietType in ['standard', 'high_protein', 'vegetarian', 'vegan', 'low_carb', 'flexible']
+        && (!('targets' in data) || (data.targets is map && data.targets.calories is number))
+        && (!('savedMeals' in data) || (data.savedMeals is list && data.savedMeals.size() <= 200))
+        && (!('foodDiary' in data) || (data.foodDiary is list && data.foodDiary.size() <= 500))
+        && (!('weightHistory' in data) || (data.weightHistory is list && data.weightHistory.size() <= 1000))
+        && (!('activeChallenges' in data) || (data.activeChallenges is list && data.activeChallenges.size() <= 50));
+    }
+
+    // 3. Collection Rules
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isVerified() && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) && isVerified() && isValidUserProfile(incoming());
+      allow delete: if false; // Profiles shouldn't be easily deletable from client
+    }
+  }
+}
