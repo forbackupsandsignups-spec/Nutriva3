@@ -18,7 +18,7 @@ import { NotificationToast } from "./NotificationToast";
 import { WeeklyOverviewChart } from "./WeeklyOverviewChart";
 import { Challenges } from "./Challenges";
 import { OrdersPage } from "./OrdersPage";
-import { ExerciseLog } from "./ExerciseLog";
+import { FitnessTracker } from "./FitnessTracker";
 import { WeeklyReportView } from "./WeeklyReportView";
 import { 
   Flame, 
@@ -528,6 +528,13 @@ export const Dashboard = ({ userProfile, stats, onLogout, onProfileUpdate }: Das
                 onLogExercise={() => setActiveTab('exercise')}
               />
 
+              {/* Quick Fitness Tracker */}
+              <FitnessTracker 
+                userProfile={userProfile}
+                onUpdateProfile={onProfileUpdate}
+                compact
+              />
+
               <div className="col-span-full">
                 <WeeklyOverviewChart userProfile={userProfile} />
               </div>
@@ -760,7 +767,7 @@ export const Dashboard = ({ userProfile, stats, onLogout, onProfileUpdate }: Das
       case 'orders':
         return <OrdersPage userProfile={userProfile} onUpgradeClick={() => setActiveTab('subscriptions')} />;
       case 'exercise':
-        return <ExerciseLog userProfile={userProfile} onUpdateProfile={onProfileUpdate} />;
+        return <FitnessTracker userProfile={userProfile} onUpdateProfile={onProfileUpdate} />;
       case 'recipes':
         return <Recipes onAddMeal={handleAddMealFromRecipe} onAddToShoppingList={handleAddToShoppingList} />;
       case 'shopping':
